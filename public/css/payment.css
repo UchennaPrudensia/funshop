@@ -1,0 +1,6 @@
+.submitbutton {
+  &:disabled{
+    background:"red";
+    cursor: not-allowed;
+  }
+}
