@@ -7,6 +7,7 @@
      <div class="">
        <p>&nbsp;</p>
        <h1>Home</h1>
+       <h2>Welcome to Codeletter</h2>
        <p><b>Categories</b></p>
        <ol>
          @foreach($categories as $category)
