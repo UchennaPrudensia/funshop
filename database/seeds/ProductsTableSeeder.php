@@ -36,6 +36,7 @@ class ProductsTableSeeder extends Seeder
         'slug' => 'laptop-' . $i,
         'details' => [13,14,15][array_rand([13,14,15])] .' inch, '. [1,2,3][array_rand([1,2,3])] .'TB SSD, 32GB RAM',
         'price' => rand(159999, 359999),
+        'featured'=> (int)round(mt_rand() / mt_getrandmax()),
         'description' => 'Lorem-'.$i.' is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s
         standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
