@@ -42,7 +42,7 @@
     <div class="nav-items">
       <p>{{$product->presentPrice()}}</p>
       <p>{{$product->details}}</p>
-      <p>{{$product->description}}</p>
+      <!-- <p>{!! $product->description !!}</p> -->
       <p><strong>Time : </strong> {{$product->created_at}}</p>
     </div>
   </li>

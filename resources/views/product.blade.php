@@ -6,7 +6,7 @@
     <div class="nav-items">
       <p>{{$product->presentPrice()}}</p>
       <p>{{$product->details}}</p>
-      <p>{{$product->description}}</p>
+      <p>{!! $product->description !!}</p>
     </div>
 
     <div class="">
@@ -18,6 +18,9 @@
       <button type="submit" name="button">Add To Cart</button>
       </form>
     </div>
+
+
+    <!--  YOU MIGHT ALSO LIKE SECTION -->
 
     <div class="">
       <p>&nbsp;</p>
@@ -31,7 +34,7 @@
           <div class="nav-items">
             <p>{{$product->presentPrice()}}</p>
             <p>{{$product->details}}</p>
-            <p>{{$product->description}}</p>
+            <p>{!! $product->description !!}</p>
           </div>
         </li>
         @endforeach

@@ -30,7 +30,7 @@
            <div class="nav-items">
              <p>{{$product->presentPrice()}}</p>
              <p>{{$product->details}}</p>
-             <p>{{$product->description}}</p>
+             <p>{!! $product->description !!}</p>
            </div>
          </li>
          @endforeach
