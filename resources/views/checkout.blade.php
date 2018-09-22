@@ -68,7 +68,8 @@
 
 <form action="{{route('checkout.store')}}"  id="payment-form" method="POST">
   @csrf
-  <input type="email" name="email" value="{{ old('email')}}" placeholder="Email Address" required><br>
+  <!-- <input type="email" name="email" value="{{ old('email')}}" placeholder="Email Address" required><br> -->
+  <input type="email" name="email" value="{{ auth()->user()->email }}" placeholder="Email Address" readonly><br>
   <input type="text" name="name" value="{{ old('name')}}" placeholder="Name" required><br>
   <input type="text" id="address" name="address" value="{{ old('address')}}" placeholder="Address" required><br>
   <input type="text" id="city" name="city" value="{{ old('city')}}" placeholder="City" required><br>

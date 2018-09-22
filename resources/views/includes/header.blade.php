@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="{{asset('css/main.css')}}">
   </head>
   <header>
-    
+
      {{ menu('main', 'includes.menus.main') }}
+
+     @include('includes/rightnav')
 
 
   </header>

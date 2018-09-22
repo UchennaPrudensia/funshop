@@ -5,6 +5,15 @@
 
 .display-horizontal{
   display: inline;
+
+}
+
+.display-horizontal-right{
+  display: flex;
+  padding-right: 10px;
+  text-align: center;
+  flex-direction: row-reverse;
+
 }
 
 .product-section-image{

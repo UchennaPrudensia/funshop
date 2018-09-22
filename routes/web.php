@@ -34,7 +34,7 @@ Route::post('/saveForLater/switchToCart/{product}', 'SaveForLaterController@swit
 Route::get('/shop/{slug}', 'ShopController@show')->name('shop.show');
 
 //  Checkout
-Route::get('/checkout', 'CheckoutController@index')->name('checkout.index');
+Route::get('/checkout', 'CheckoutController@index')->name('checkout.index')->middleware('auth');
 Route::post('/checkout', 'CheckoutController@store')->name('checkout.store');
 
 
@@ -54,3 +54,7 @@ Route::delete('/coupon', 'CouponController@destroy')->name('coupon.destroy');
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
