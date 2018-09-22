@@ -26,7 +26,7 @@
          <li>
            <a href="{{route('shop.show', $product->slug)}}">{{$product->name}}</a>
          </br>
-           <a href="{{route('shop.show', $product->slug)}}"><img src="{{ asset('img/products/'.$product->slug.'.jpg')}}" alt=""></a>
+           <a href="{{route('shop.show', $product->slug)}}"><img src="{{ asset('storage/'.$product->image)}}" alt=""></a>
            <div class="nav-items">
              <p>{{$product->presentPrice()}}</p>
              <p>{{$product->details}}</p>

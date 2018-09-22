@@ -28,7 +28,7 @@
   @foreach(Cart::content() as $item)
       <a href="{{route('shop.show', $item->model->slug)}}">{{$item->model->name}}</a>
       <br>
-      <a href="{{route('shop.show', $item->model->slug)}}"><img src="{{ asset('img/products/'.$item->model->slug.'.jpg')}}" alt=""></a>
+      <a href="{{route('shop.show', $item->model->slug)}}"><img src="{{ asset('storage/'.$item->model->image)}}" alt=""></a>
       <br>
       <!-- <p>Quantity:{{ $item->qty}} </p>
       <br> -->
