@@ -37,6 +37,9 @@ Route::get('/shop/{slug}', 'ShopController@show')->name('shop.show');
 Route::get('/checkout', 'CheckoutController@index')->name('checkout.index')->middleware('auth');
 Route::post('/checkout', 'CheckoutController@store')->name('checkout.store');
 
+//Guest Checkout
+Route::get('/guestcheckout', 'CheckoutController@index')->name('guestcheckout.index');
+
 
 Route::get('/empty', function(){
    Cart::instance('saveForLater')->destroy();

@@ -9,9 +9,12 @@
   </head>
   <header>
 
-     {{ menu('main', 'includes.menus.main') }}
+    @if(!(request()->is('checkout') || request()->is('guestcheckout')))
 
+     {{ menu('main', 'includes.menus.main') }}
      @include('includes/rightnav')
+
+    @endif
 
 
   </header>

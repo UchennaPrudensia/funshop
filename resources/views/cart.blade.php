@@ -86,9 +86,12 @@
 <p>Total: {{ presentPrice(Cart::total())}}</p>
 
 <p align="center">
- <a href="{{route('checkout.index')}}">
+  <a href="{{route('checkout.index')}}">
     <button  type="button" name="button">Checkout</button>
-</a>
+  </a><br>
+  <a href="{{route('guestcheckout.index')}}">
+    <button  type="button" name="button">Checkout As Guest</button>
+  </a>
 </p>
 
 @else
@@ -108,7 +111,8 @@
 
     <a href="{{route('shop.show', $item->model->slug)}}">{{$item->model->name}}</a>
     <br>
-    <a href="{{route('shop.show', $item->model->slug)}}"><img src="{{ asset('img/products/'.$item->model->slug.'.jpg')}}" alt=""></a>
+    <!-- <a href="{{route('shop.show', $item->model->slug)}}"><img src="{{ asset('img/products/'.$item->model->slug.'.jpg')}}" alt=""></a> -->
+    <a href="{{route('shop.show', $item->model->slug)}}"><img src="{{ asset('storage/'.$item->model->image)}}" alt=""></a>
     <br>
 
     <p>Price: {{presentPrice($item->model->price)}}</p>

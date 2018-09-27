@@ -31,6 +31,10 @@ return [
         'namespace' => 'TCG\\Voyager\\Http\\Controllers',
     ],
 
+  
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Models config

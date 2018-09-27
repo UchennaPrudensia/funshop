@@ -12,7 +12,7 @@
 <ul>
   @foreach($errors->all() as $error)
   <li>
-    <p style="color:red">{{ $error }}</p>
+    <p style="color:red">{!! $error !!}</p>
   </li>
   @endforeach
 </ul>
@@ -68,8 +68,13 @@
 
 <form action="{{route('checkout.store')}}"  id="payment-form" method="POST">
   @csrf
-  <!-- <input type="email" name="email" value="{{ old('email')}}" placeholder="Email Address" required><br> -->
-  <input type="email" name="email" value="{{ auth()->user()->email }}" placeholder="Email Address" readonly><br>
+
+  @if(auth()->user())
+    <input type="email" name="email" value="{{ auth()->user()->email }}" placeholder="Email Address" readonly><br>
+  @else
+    <input type="email" name="email" value="{{ old('email')}}" placeholder="Email Address" required><br>
+  @endif
+
   <input type="text" name="name" value="{{ old('name')}}" placeholder="Name" required><br>
   <input type="text" id="address" name="address" value="{{ old('address')}}" placeholder="Address" required><br>
   <input type="text" id="city" name="city" value="{{ old('city')}}" placeholder="City" required><br>
