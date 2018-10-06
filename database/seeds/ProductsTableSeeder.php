@@ -37,6 +37,8 @@ class ProductsTableSeeder extends Seeder
         'details' => [13,14,15][array_rand([13,14,15])] .' inch, '. [1,2,3][array_rand([1,2,3])] .'TB SSD, 32GB RAM',
         'price' => rand(159999, 359999),
         'featured'=> (int)round(mt_rand() / mt_getrandmax()),
+        'image' => 'products/dummy1/laptop-'.$i.'.jpg',
+        'images' => '',
         'description' => 'Lorem-'.$i.' is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s
         standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
@@ -58,6 +60,8 @@ class ProductsTableSeeder extends Seeder
         'slug' => 'desktop-' . $i,
         'details' => [24,25,27][array_rand([24,25,27])] .' inch, '. [1,2,3][array_rand([1,2,3])] .'TB SSD, 32GB RAM',
         'price' => rand(159999, 359999),
+        'image' => 'products/dummy1/desktop-'.$i.'.jpg',
+        'images' => '',
         'description' => 'Lorem-'.$i.' is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s
         standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
@@ -77,6 +81,8 @@ class ProductsTableSeeder extends Seeder
             'slug' => 'appliance-' . $i,
             'details' => [30,31,32][array_rand([31,32,33])] .' inch, '. [1,2,3][array_rand([1,2,3])] .'TB SSD, 32GB RAM',
             'price' => rand(159999, 359999),
+            'image' => 'products/dummy1/appliance-'.$i.'.jpg',
+            'images' => '',
             'description' => 'Lorem-'.$i.' is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s
             standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
             It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.

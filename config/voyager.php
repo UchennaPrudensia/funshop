@@ -31,7 +31,19 @@ return [
         'namespace' => 'TCG\\Voyager\\Http\\Controllers',
     ],
 
-  
+    /*
+    |--------------------------------------------------------------------------
+    | Admin config
+    |--------------------------------------------------------------------------
+    |
+    | Here you can specify Admin settings
+    |
+    */
+
+     'adminPassword' => env('ADMIN_PASSWORD', 'password'),
+
+
+
 
 
 
