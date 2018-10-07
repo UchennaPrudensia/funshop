@@ -10,10 +10,11 @@ class PermissionsTableSeederCustom extends Seeder
      */
      public function run()
      {
+
          Permission::generateFor('products');
          Permission::generateFor('coupons');
          Permission::generateFor('category');
          Permission::generateFor('category-product');
-         Permission::generateFor('orders');
+         //Permission::generateFor('orders');
      }
 }

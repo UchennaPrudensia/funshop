@@ -12,7 +12,7 @@ class EcomerceInstall extends Command
      *
      * @var string
      */
-    protected $signature = 'ecommerce:install';
+    protected $signature = 'ecommerce:install {--force : Do not ask for user confirmation}';
 
     /**
      * The console command description.
@@ -39,8 +39,25 @@ class EcomerceInstall extends Command
     public function handle()
     {
 
-      if ($this->confirm('This will delete all the images in the folder named dummy1. Are you sure ? '))
+      if($this->option('force'))
       {
+        $this->proceed();
+      }
+      else
+      {
+        if ($this->confirm('This will delete all the images in the folder named dummy1. Are you sure ? '))
+        {
+          $this->proceed();
+        }
+      }
+
+    }
+
+
+
+    protected function proceed()
+    {
+
         File::deleteDirectory(public_path('storage/products/dummy1'));
 
         $this->callSilent('storage:link');
@@ -68,68 +85,49 @@ class EcomerceInstall extends Command
         ]);
 
 
-        // $this->call('db:seed', [
-        //   '--class' => 'MenusTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'MenuItemsTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'RolesTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'DataTypesTableSeederCustom',
-        //
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'DataRowsTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'MenusTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'MenuItemsTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'RolesTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'PermissionsTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'PermissionRoleTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
-        //
-        // $this->call('db:seed', [
-        //   '--class' => 'UsersTableSeederCustom',
-        //   // '--force' => true,
-        // ]);
+        $this->call('db:seed', [
+          '--class' => 'MenusTableSeederCustom',
+          // '--force' => true,
+        ]);
+
+        $this->call('db:seed', [
+          '--class' => 'MenuItemsTableSeederCustom',
+          // '--force' => true,
+        ]);
 
 
+        $this->call('db:seed', [
+          '--class' => 'DataTypesTableSeederCustom',
 
+        ]);
+
+        $this->call('db:seed', [
+          '--class' => 'DataRowsTableSeederCustom',
+          // '--force' => true,
+        ]);
+
+        $this->call('db:seed', [
+          '--class' => 'RolesTableSeederCustom',
+          // '--force' => true,
+        ]);
+
+        $this->call('db:seed', [
+          '--class' => 'UsersTableSeederCustom',
+          // '--force' => true,
+        ]);
+
+
+        $this->call('db:seed', [
+          '--class' => 'PermissionsTableSeederCustom',
+          // '--force' => true,
+        ]);
+
+        $this->call('db:seed', [
+          '--class' => 'PermissionRoleTableSeederCustom',
+          // '--force' => true,
+        ]);
 
         $this->info('Dummy Data Installed');
-      }
-
-
 
     }
 }

@@ -60,7 +60,7 @@ class DataTypesTableSeederCustom extends Seeder
                 'slug'                  => 'category-product',
                 'display_name_singular' => 'Category Product',
                 'display_name_plural'   => 'Category Products',
-                'icon'                  => 'voyager-categories',
+                'icon'                  => 'voyager-bookmark',
                 'model_name'            => 'App\CategoryProduct',
                 'controller'            => '',
                 'generate_permissions'  => 1,
@@ -68,19 +68,19 @@ class DataTypesTableSeederCustom extends Seeder
             ])->save();
           }
 
-        $dataType = $this->dataType('name', 'orders');
-        if (!$dataType->exists) {
-            $dataType->fill([
-                'slug'                  => 'orders',
-                'display_name_singular' => 'Order',
-                'display_name_plural'   => 'Orders',
-                'icon'                  => 'voyager-documentation',
-                'model_name'            => 'App\Order',
-                'controller'            => '\App\Http\Controllers\Voyager\OrdersController',
-                'generate_permissions'  => 1,
-                'description'           => '',
-            ])->save();
-        }
+        // $dataType = $this->dataType('name', 'orders');
+        // if (!$dataType->exists) {
+        //     $dataType->fill([
+        //         'slug'                  => 'orders',
+        //         'display_name_singular' => 'Order',
+        //         'display_name_plural'   => 'Orders',
+        //         'icon'                  => 'voyager-documentation',
+        //         'model_name'            => 'App\Order',
+        //         'controller'            => '\App\Http\Controllers\Voyager\OrdersController',
+        //         'generate_permissions'  => 1,
+        //         'description'           => '',
+        //     ])->save();
+        // }
     }
 
     /**

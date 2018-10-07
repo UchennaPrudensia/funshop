@@ -13,9 +13,8 @@ class UsersTableSeederCustom extends Seeder
      */
     public function run()
     {
-        if (User::count() == 0) {
             $role = Role::where('name', 'adminweb')->firstOrFail();
-
+            
             User::create([
                 'name'           => 'Admin',
                 'email'          => 'adminweb@adminweb.com',
@@ -23,6 +22,6 @@ class UsersTableSeederCustom extends Seeder
                 'remember_token' => str_random(60),
                 'role_id'        => $role->id,
             ]);
-        }
+
     }
 }

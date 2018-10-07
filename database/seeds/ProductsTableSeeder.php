@@ -60,7 +60,7 @@ class ProductsTableSeeder extends Seeder
         'slug' => 'desktop-' . $i,
         'details' => [24,25,27][array_rand([24,25,27])] .' inch, '. [1,2,3][array_rand([1,2,3])] .'TB SSD, 32GB RAM',
         'price' => rand(159999, 359999),
-        'image' => 'products/dummy1/desktop-'.$i.'.jpg',
+        'image' => 'products/dummy1/desktop-'.[1,2,3,4,5,6,7,8][array_rand([1,2,3,4,5,6,7,8])].'.jpg',
         'images' => '',
         'description' => 'Lorem-'.$i.' is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s
         standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
@@ -81,7 +81,7 @@ class ProductsTableSeeder extends Seeder
             'slug' => 'appliance-' . $i,
             'details' => [30,31,32][array_rand([31,32,33])] .' inch, '. [1,2,3][array_rand([1,2,3])] .'TB SSD, 32GB RAM',
             'price' => rand(159999, 359999),
-            'image' => 'products/dummy1/appliance-'.$i.'.jpg',
+            'image' => 'products/dummy1/appliance-'.[1,2,3,4,5,6,7,8][array_rand([1,2,3,4,5,6,7,8])].'.jpg',
             'images' => '',
             'description' => 'Lorem-'.$i.' is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s
             standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
