@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
+use App\OrderProduct;
+
 use Illuminate\Http\Request;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
@@ -71,9 +74,9 @@ class CheckoutController extends Controller
             ],
           ]);
 
-          //SUCCESSFULL
+          $this->addToOrdersTable($request, null);
 
-          //return back()->with('success_message', 'Thannk you, your payment was successfully accepted');
+          //SUCCESSFULL
 
           Cart::instance('default')->destroy();
           session()->forget('coupon');
@@ -83,6 +86,7 @@ class CheckoutController extends Controller
 
         catch (CardErrorException $e)
         {
+           $this->addToOrdersTable($request, $e->getMessage());
            return back()->withErrors('Error! '. $e->getMessage());
 
         }
@@ -134,11 +138,50 @@ class CheckoutController extends Controller
         //
     }
 
+    public function addToOrdersTable($request, $error)
+    {
+      // insert into orders table.
+      $order = Order::create([
+        'user_id'  => auth()->user() ? auth()->user()->id : null ,
+        'billing_email'  => $request->email ,
+        'billing_name'  => $request->name,
+        'billing_address' => $request->address,
+        'billing_city'  => $request->city,
+        'billing_state'  => $request->state,
+        'billing_zipcode' => $request->zipcode,
+        'billing_phone'  => $request->phone,
+        'billing_name_on_card'  => $request->name_on_card,
+        'billing_discount'  => $this->getNumbers()->get('discount') ,
+        'billing_discount_code'  => $this->getNumbers()->get('code'),
+        'billing_subtotal'  => $this->getNumbers()->get('newSubtotal'),
+        'billing_tax'  => $this->getNumbers()->get('newTax'),
+        'billing_total'  => $this->getNumbers()->get('newTotal'),
+        'error'  => $error,
+
+      ]);
+
+      //insert into order_product table.
+
+       foreach(Cart::content() as $item)
+       {
+
+         OrderProduct::create([
+           'order_id' => $order->id,
+           'quantity' => $item->qty,
+           'product_id' => $item->model->id,
+         ]);
+       }
+
+
+    }
+
     public function getNumbers()
     {
+
       $discount = session()->get('coupon')['discount'] ?? 0;
       $tax = config('cart.tax') / 100;
       $newSubtotal = (Cart::subtotal() - $discount);
+      $code = session()->get('coupon')['name'] ?? null;
       $newTax = $newSubtotal * $tax;
       //$newTotal = $newSubtotal * (1 + $tax);
       $newTotal = $newSubtotal + $newTax;
@@ -147,6 +190,7 @@ class CheckoutController extends Controller
         'discount' => $discount,
         'tax' => $tax,
         'newSubtotal' => $newSubtotal,
+        'code' => $code,
         'newTax' => $newTax,
         'newTotal' => $newTotal
       ]);

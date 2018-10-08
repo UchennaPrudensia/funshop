@@ -23,7 +23,7 @@ class CouponController extends Controller
 
         if(!$coupon)
         {
-          return redirect()->route('checkout.index')->withErrors('Invalid Coupon Code. Please try again.');
+          return back()->withErrors('Invalid Coupon Code. Please try again.');
         }
 
         session()->put('coupon', [
@@ -31,8 +31,9 @@ class CouponController extends Controller
           'discount'=> $coupon->discount(Cart::subtotal())
         ]);
 
-        return redirect()->route('checkout.index')->with('success_message', 'Coupon Successfully Applied');
 
+
+        return back()->with('success_message', 'Coupon Successfully Applied');
 
     }
 
@@ -46,6 +47,6 @@ class CouponController extends Controller
     public function destroy()
     {
         session()->forget('coupon');
-        return redirect()->route('checkout.index')->with('success_message', 'Coupon has been removed!');
+        return back()->with('success_message', 'Coupon has been removed!');
     }
 }
