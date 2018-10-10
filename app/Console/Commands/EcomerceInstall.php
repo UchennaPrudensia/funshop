@@ -71,60 +71,60 @@ class EcomerceInstall extends Command
 
         $this->call('migrate:fresh', [
           '--seed' => true,
-          // '--force' => true,
+          '--force' => true,
         ]);
 
         $this->call('db:seed', [
           '--class' => 'VoyagerDatabaseSeeder',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
         $this->call('db:seed', [
           '--class' => 'VoyagerDummyDatabaseSeeder',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
 
         $this->call('db:seed', [
           '--class' => 'MenusTableSeederCustom',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
         $this->call('db:seed', [
           '--class' => 'MenuItemsTableSeederCustom',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
 
         $this->call('db:seed', [
           '--class' => 'DataTypesTableSeederCustom',
-
+          '--force' => true,
         ]);
 
         $this->call('db:seed', [
           '--class' => 'DataRowsTableSeederCustom',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
         $this->call('db:seed', [
           '--class' => 'RolesTableSeederCustom',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
         $this->call('db:seed', [
           '--class' => 'UsersTableSeederCustom',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
 
         $this->call('db:seed', [
           '--class' => 'PermissionsTableSeederCustom',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
         $this->call('db:seed', [
           '--class' => 'PermissionRoleTableSeederCustom',
-          // '--force' => true,
+          '--force' => true,
         ]);
 
         $this->info('Dummy Data Installed');
