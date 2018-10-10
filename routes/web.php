@@ -61,3 +61,12 @@ Route::group(['prefix' => 'admin'], function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+//Viewing Email in the Browser
+
+Route::get('/mailable', function(){
+
+  $order = App\Order::find(25);
+  //dd($order);
+  return new App\Mail\OrderPlaced($order);
+});

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\OrderProduct;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderPlaced;
 
 use Illuminate\Http\Request;
 use Gloudemans\Shoppingcart\Facades\Cart;
@@ -74,14 +76,17 @@ class CheckoutController extends Controller
             ],
           ]);
 
-          $this->addToOrdersTable($request, null);
+          $order = $this->addToOrdersTable($request, null);
+
+         //Send Email
+          Mail::send(new OrderPlaced($order));
 
           //SUCCESSFULL
 
           Cart::instance('default')->destroy();
           session()->forget('coupon');
 
-          return redirect()->route('thankyou.index')->with('success_message', 'Thank you, your payment was successfully accepted');
+          return redirect()->route('thankyou.index')->with('success_message', 'Thank you, your payment was successfully accepted and a confirmation email was sent');
         }
 
         catch (CardErrorException $e)
@@ -171,6 +176,8 @@ class CheckoutController extends Controller
            'product_id' => $item->model->id,
          ]);
        }
+
+       return $order;
 
 
     }
