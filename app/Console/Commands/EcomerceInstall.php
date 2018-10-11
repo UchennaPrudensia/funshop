@@ -62,7 +62,7 @@ class EcomerceInstall extends Command
 
         $this->callSilent('storage:link');
 
-        $copySuccess = File::copyDirectory(public_path('storage/products/dummy'), public_path('storage/products/dummy1'));
+        $copySuccess = File::copyDirectory(public_path('img/products'), public_path('storage/products/dummy1'));
 
         if($copySuccess)
         {
