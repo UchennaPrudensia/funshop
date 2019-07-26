@@ -1,17 +1,24 @@
+
+
+@extends('layouts/app')
+
+@section('content')
+
+
+<!-- Search -->
+@component('components.breadcrumbs')
+
+@endcomponent
+
 @include('includes/header')
-<h1> Cart </h1>
-<a href="{{route('shop.index')}}">
-<button type="button" name="button">Continue Shopping</button>
-</a>
 
 <!--  CHECK MESSAGE-->
+<div>
 @if (session()->has('success_message'))
 <div class="alert alert-succes">
   <p>
    {{ session()->get('success_message') }}
   </p>
-
-
 </div>
 @endif
 
@@ -28,49 +35,60 @@
 @endif
 
 
+
+<h1> Cart </h1>
+<a href="{{route('shop.index')}}">
+<button type="button" name="button">Continue Shopping</button>
+</a>
+
+
+
 <!--  CHECK ITEMS IN CART-->
 @if (Cart::count() > 0 )
 
 <p><b>{{Cart::count()}}</b> items in your cart</p>
 
-@foreach(Cart::content() as $item)
-<a href="{{route('shop.show', $item->model->slug)}}">{{$item->model->name}}</a>
-<br>
-<a href="{{route('shop.show', $item->model->slug)}}"><img src="{{ asset('storage/'.$item->model->image)}}" alt=""></a>
-<br>
+@foreach(Cart::content() as $product)
+
+  <a href="{{route('shop.show', $product->model->slug)}}">{{$product->model->name}}</a>
+  <br>
+  <a href="{{route('shop.show', $product->model->slug)}}"><img src="{{ asset('storage/'.$product->model->image)}}" alt=""></a>
+  <br>
 
 
 <!--  Quantity -->
-<select class="quantity"  data-set="{{ $item->rowId }}">
-  @for($i=1; $i < 5 + 1; $i++)
-    <option {{ $item->qty == $i ? 'selected' : ''}} >{{$i}}</option>
-  @endfor
+
+  <select class="quantity"  data-set="{{ $product->rowId }}">
+    @for($i=1; $i < 5 + 1; $i++)
+      <option {{$product->qty == $i ? 'selected' : ''}}>{{$i}}</option>
+    @endfor
+  </select>
 
 
 
-</select>
 
-<p>Price: {{presentPrice($item->subtotal)}}</p>
+
+
+ <p>Price: {{presentPrice($product->subtotal)}}</p>
+
 
 <!-- DELETE FROM CART -->
-
-<form action="{{route('cart.destroy', $item->rowId)}}" method="POST">
+ <form action="{{route('cart.destroy', $product->rowId)}}" method="POST">
   @method('DELETE')
   @csrf
+  <button type="submit" name="button">Remove</button>
+ </form>
 
-<button type="submit" name="button">Remove</button>
-</form>
 
 <!--  Add To Save For Later -->
-
-  <form action="{{route('cart.saveForLater', $item->rowId)}}" method="POST">
+  <form action="{{route('cart.saveForLater', $product->rowId)}}" method="POST">
     @csrf
-
   <button type="submit" name="button" >Save For Later</button>
   </form>
-
 <hr>
 @endforeach
+
+
 
 <!--  Calculation  Total Price-->
 
@@ -80,6 +98,7 @@
 </p>
 
 <hr>
+
 <p>Subtotal: {{ presentPrice(Cart::subtotal()) }}</p>
 
 <p>Tax: {{ presentPrice(Cart::tax())}}</p>
@@ -89,9 +108,6 @@
   <a href="{{route('checkout.index')}}">
     <button  type="button" name="button">Checkout</button>
   </a><br>
-  <a href="{{route('guestcheckout.index')}}">
-    <button  type="button" name="button">Checkout As Guest</button>
-  </a>
 </p>
 
 @else
@@ -137,35 +153,38 @@
 <p>No items in save for later</p>
 
 @endif
+</div>
 
-<script src="{{ asset('js/app.js')}}"></script>
 
+
+
+<!-- <script src="{{asset('js/app.js')}}"></script> -->
 <script>
   (function(){
-
     const classname = document.querySelectorAll('.quantity');
+     console.log('hello');
 
+    Array.from(classname).forEach(function(element) {
+      element.addEventListener("change", function() {
 
-    Array.from(classname).forEach(function(element){
-      element.addEventListener('change', function() {
         const id = element.getAttribute('data-set');
-
           axios.patch(`/cart/${id}`, {
            quantity: this.value,
-            // console.log(response);
-
           })
           .then(function (response) {
             window.location.href = '{{ route('cart.index')}}';
-
           })
           .catch(function (error) {
-            console.log(error);
             window.location.href = '{{ route('cart.index')}}';
           });
         });
+
+
+
 
       });
 
   })();
 </script>
+
+@endsection

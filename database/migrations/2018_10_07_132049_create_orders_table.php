@@ -20,12 +20,12 @@ class CreateOrdersTable extends Migration
                   ->onUpdate('cascade')->onDelete('set null');
             $table->string('billing_email');
             $table->string('billing_name');
-            $table->string('billing_address');
-            $table->string('billing_city');
-            $table->string('billing_state');
-            $table->string('billing_zipcode');
-            $table->string('billing_phone');
-            $table->string('billing_name_on_card');
+            $table->string('billing_address')->nullable();
+            $table->string('billing_city')->nullable();
+            $table->string('billing_state')->nullable();
+            $table->string('billing_zipcode')->nullable();
+            $table->string('billing_phone')->nullable();
+            $table->string('billing_name_on_card')->nullable();
             $table->integer('billing_discount')->default(0);
             $table->string('billing_discount_code')->nullable();
             $table->integer('billing_subtotal');

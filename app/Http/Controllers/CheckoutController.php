@@ -12,6 +12,8 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Cartalyst\Stripe\Exception\CardErrorException;
 use App\Http\Requests\CheckoutRequest;
+use Sample\PayPalClient;
+use PayPalCheckoutSdk\Orders\OrdersGetRequest;
 
 class CheckoutController extends Controller
 {
@@ -23,13 +25,18 @@ class CheckoutController extends Controller
     public function index()
     {
 
-      if (auth()->user() && request()->is('guestcheckout'))
-      {
-        return redirect()->route('checkout.index');
-      }
+        $gateway = new \Braintree\Gateway([
+        'environment' => config('services.braintree.environment'),
+        'merchantId' => config('services.braintree.merchantId'),
+        'publicKey' => config('services.braintree.publicKey'),
+        'privateKey' => config('services.braintree.privateKey')
+        ]);
+
+        $paypalToken = $gateway->ClientToken()->generate();
 
 
         return view('checkout', with([
+                        'paypalToken' => $paypalToken,
                         'discount' => $this->getNumbers()->get('discount'),
                         'newTax' => $this->getNumbers()->get('newTax'),
                         'newSubtotal' => $this->getNumbers()->get('newSubtotal'),
@@ -98,50 +105,89 @@ class CheckoutController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function paypalCheckout(Request $request)
     {
-        //
+
+      $gateway = new \Braintree\Gateway([
+          'environment' => config('services.braintree.environment'),
+          'merchantId' => config('services.braintree.merchantId'),
+          'publicKey' => config('services.braintree.publicKey'),
+          'privateKey' => config('services.braintree.privateKey')
+          ]);
+
+
+          $nonce =   $request->get('payment_method_nonce');
+          $address = $request->get('streetAddress');
+          $city =    $request->get('region');
+          $state =   $request->get('locality');
+          $postal_code = $request->get('postalCode');
+          $firstName = $request->get('firstName');
+          $lastName = $request->get('lastName');
+
+
+
+
+          $result = $gateway->transaction()->sale([
+              'amount' => round($this->getNumbers()->get('newTotal') / 100, 2),
+              'merchantAccountId' => 'ifyolo',
+              // 'serviceFeeAmount' => "3.00",
+              'shippingAmount' => '13',
+              'paymentMethodNonce' => $nonce,
+              // 'customer' => [
+              //   'company' => 'ifYolo',
+              //   'email' => 'uchemp@ruby.com',
+              //   'firstName' => 'uche',
+              //   'lastName' => 'mb',
+              //   'id' => 'zxy45'
+              // ],
+              'shipping' => [
+                'firstName' => $firstName,
+                'lastName' => $lastName,
+                'streetAddress' => $address,
+                'region'        => $state,
+                'locality'      => $city,
+                'postalCode'    => $postal_code,
+              ],
+              'options' => [
+                  'submitForSettlement' => true,
+              ]
+          ]);
+
+          //$address = $gateway->address()->find('a_customer_id', 'an_address_id');
+
+          $transaction = $result->transaction;
+          if ($result->success) {
+           //dd($result);
+
+            //Add to orders table
+            $order = $this->addToOrdersTablePaypal($transaction->paypal['payerEmail'], $transaction->paypal['payerFirstName'].' '.$transaction->paypal['payerLastName'], $address, $city, $state, $postal_code, null);
+
+            //Send Email
+             Mail::send(new OrderPlaced($order));
+
+             //SUCCESSFULL
+
+             Cart::instance('default')->destroy();
+             session()->forget('coupon');
+
+
+
+              return redirect()->route('thankyou.index')->with('success_message', 'Thank you, your payment was successfully accepted and a confirmation email was sent');
+          } else {
+            //dd($result->message);
+              $order = $this->addToOrdersTablePaypal($transaction->paypal['payerEmail'], $transaction->paypal['payerFirstName'].' '.$transaction->paypal['payerLastName'], $address, $city, $state, $postal_code, $result->message);
+              return back()->with('error', 'Error message: ' . $result->message);
+          }
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     public function addToOrdersTable($request, $error)
     {
@@ -182,12 +228,58 @@ class CheckoutController extends Controller
 
     }
 
-    public function getNumbers()
+    public function addToOrdersTablePaypal($email, $name, $address, $city, $state, $zipcode, $error)
+    {
+      // insert into orders table.
+      $order = Order::create([
+        'user_id'  => auth()->user() ? auth()->user()->id : null ,
+        'billing_email'  => $email,
+        'billing_name'  => $name,
+        'billing_address' => $address,
+        'billing_city'  => $city,
+        'billing_state'  => $state,
+        'billing_zipcode' => $zipcode,
+        // 'billing_phone'  => $request->phone,
+        // 'billing_name_on_card'  => $request->name_on_card,
+        'billing_discount'  => $this->getNumbers()->get('discount') ,
+        'billing_discount_code'  => $this->getNumbers()->get('code'),
+        'billing_subtotal'  => $this->getNumbers()->get('newSubtotal'),
+        'billing_tax'  => $this->getNumbers()->get('newTax'),
+        'billing_total'  => $this->getNumbers()->get('newTotal'),
+        'error'  => $error,
+
+      ]);
+
+      //insert into order_product table.
+
+       foreach(Cart::content() as $item)
+       {
+
+         OrderProduct::create([
+           'order_id' => $order->id,
+           'quantity' => $item->qty,
+           'product_id' => $item->model->id,
+         ]);
+       }
+
+       return $order;
+
+
+    }
+
+
+    private function getNumbers()
     {
 
       $discount = session()->get('coupon')['discount'] ?? 0;
       $tax = config('cart.tax') / 100;
       $newSubtotal = (Cart::subtotal() - $discount);
+
+      if($newSubtotal < 0)
+      {
+        $newSubtotal = 0;
+      }
+
       $code = session()->get('coupon')['name'] ?? null;
       $newTax = $newSubtotal * $tax;
       //$newTotal = $newSubtotal * (1 + $tax);

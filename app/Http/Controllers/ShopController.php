@@ -27,7 +27,7 @@ class ShopController extends Controller
           $query->where('slug', request()->category);
         });
 
-         $categoryName = optional(Category::where('slug', request()->category)->get()->first())->name;
+         $categoryName = optional(Category::where('slug', request()->category )->get()->first())->name;
        }
 
        else
@@ -62,38 +62,33 @@ class ShopController extends Controller
 
        return view('shop', compact('products', 'categoryName', 'categories'));
 
+     }
 
 
 
 
 
 
+
+      public function search(Request $request)
+      {
+        $request->validate([
+          'query' => 'required|min:3',
+        ]);
+
+        $query = $request->input('query');
+
+        // $products = Product::where('name', 'like', "%$query%")->orWhere('details', 'like', "%$query%")->orWhere('description', 'like', "%$query%")->orderBy('name')->paginate(10);
+
+        $products = Product::search($query)->paginate(10);
+
+
+
+        return view('search-results', compact('products'));
+
+        //return view('search-results');
       }
 
-
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -105,40 +100,23 @@ class ShopController extends Controller
     {
         $product = Product::where('slug', '=', $slug)->firstorfail();
         $mightAlsoLike = Product::inRandomOrder()->take(6)->get();
-        return view('product', compact('product', 'mightAlsoLike'));
+
+        if( $product->quantity > setting('site.stock_threshold'))
+        {
+          $stockLevel = 'in stock';
+        }
+        elseif($product->quantity <= setting('site.stock_threshold') && $product->quantity > 0 )
+        {
+          $stockLevel = 'low stock';
+        }
+        else
+        {
+          $stockLevel = 'out of stock';
+        }
+
+
+        return view('product', compact('product', 'mightAlsoLike', 'stockLevel'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

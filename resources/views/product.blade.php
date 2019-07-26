@@ -1,5 +1,44 @@
+@extends('layouts/app')
+@section('extra-css')
+  <link rel="stylesheet" href="{{ asset('css/algolia.css') }}">
+@endsection
 
-@include('includes/header')
+@section('content')
+
+
+
+<!-- Search -->
+<div class="">
+  @component('components.breadcrumbs')
+  @endcomponent
+</div>
+
+<div class="container">
+  @if (session()->has('success_message'))
+  <div class="alert alert-succes">
+    <p>
+     {{ session()->get('success_message') }}
+    </p>
+
+
+  </div>
+  @endif
+
+  <!--  CHECK ERRORS-->
+  @if(count($errors) > 0)
+  <ul>
+    @foreach($errors->all() as $error)
+    <li>
+      {{ $error }}
+    </li>
+    @endforeach
+
+  </ul>
+  @endif
+
+</div>
+
+<br>
 
    <div class="product-section">
      <a href="{{route('shop.show', $product->slug)}}">{{$product->name}}</a></br>
@@ -39,6 +78,7 @@
 
           <p>{{$product->presentPrice()}}</p>
           <p>{{$product->details}}</p>
+          <p>{{$stockLevel}}</p>
           <p>{!! $product->description !!}</p>
     </div>
 
@@ -46,9 +86,11 @@
 
 
 
-    <!-- ADD TO CART  -->
+  <!-- ADD TO CART  -->
+
+ @if($product->quantity > 0 )
     <div class="">
-      <form action="{{route('cart.index')}}" method="post">
+      <form action="{{route('cart.store')}}" method="post">
         @csrf
         <input type="text" hidden name="id" value="{{$product->id}}">
         <input type="text" hidden name="name" value="{{$product->name}}">
@@ -56,6 +98,7 @@
       <button type="submit" name="button">Add To Cart</button>
       </form>
     </div>
+  @endif
 
 
     <!--  YOU MIGHT ALSO LIKE SECTION -->
@@ -80,7 +123,7 @@
         </div>
       </ul>
 
-    </div>
+
 
 
       <!-- Javascript for Images -->
@@ -103,3 +146,12 @@
         })();
 
     </script>
+
+    @endsection
+
+    @section('extra-js')
+    <!-- Include AlgoliaSearch JS Client and autocomplete.js library -->
+    <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+    <script src="{{asset('js/algolia.js')}}"></script>
+    @endsection

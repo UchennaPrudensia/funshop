@@ -147,10 +147,13 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
+
+
         /*
          * Package Service Providers...
          */
          Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
+         //Laravel\Scout\ScoutServiceProvider::class,
 
         /*
          * Application Service Providers...

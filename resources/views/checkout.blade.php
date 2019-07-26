@@ -1,11 +1,17 @@
+
 @include('includes/header')
-<script src="https://js.stripe.com/v3/">
 
-</script>
+<!-- Search -->
+@component('components.breadcrumbs')
+@endcomponent
 
 
+<!-- @include('includes/header') -->
+
+<!-- <script src="https://www.paypal.com/sdk/js?client-id=AVt90hwtCL3b-oOawT7wKUX0jOtUL8U6kJ5Isk6IhDRSUP-4IrLMGh62wmbTq_ykapu7eNOf_KDsnEbs"></script> -->
 
 <h1>Checkout</h1>
+
 
 <!--  CHECK ERRORS-->
 @if(count($errors) > 0)
@@ -64,136 +70,71 @@
   <hr>
 </div>
 
-<h3>Billing Details</h3>
 
-<form action="{{route('checkout.store')}}"  id="payment-form" method="POST">
+<!-- Paypal-payment Form  -->
+  <form method="post" id="paypal-payment-form" action="{{route('checkout.paypal')}}">
   @csrf
+    <section>
+        <div id="paypal-container"></div>
+        <!-- <div id="paypal-button-container"></div> -->
 
-  @if(auth()->user())
-    <input type="email" name="email" value="{{ auth()->user()->email }}" placeholder="Email Address" readonly><br>
-  @else
-    <input type="email" name="email" value="{{ old('email')}}" placeholder="Email Address" required><br>
-  @endif
-
-  <input type="text" name="name" value="{{ old('name')}}" placeholder="Name" required><br>
-  <input type="text" id="address" name="address" value="{{ old('address')}}" placeholder="Address" required><br>
-  <input type="text" id="city" name="city" value="{{ old('city')}}" placeholder="City" required><br>
-  <input type="text" id="state" name="state" value="{{ old('state')}}" placeholder="State" required><br>
-  <input type="text" id="zipcode" name="zipcode" value="{{ old('zipcode')}}" placeholder="Zip Code" required><br>
-  <input type="phone" name="phone" value="{{ old('phone')}}" placeholder="Phone" required><br>
-
-
-  <p></p>
-  <label for="">Payment Details</label><br>
-  <input type="text" id="name_on_card" name="name_on_card" value="" placeholder="Name on Card"><br>
-
-  <div class="form-row">
-    <label for="card-element">
-      Credit or debit card
-    </label>
-    <div id="card-element">
-      <!-- A Stripe Element will be inserted here. -->
-    </div>
-
-    <!-- Used to display form errors. -->
-    <div id="card-errors" role="alert"></div>
-  </div>
-
-  <button class="submitbutton" type="submit" id="complete-order" name="button" >Submit Payment</button>
-</form>
-
-<script>
-
-  (function(){
-    // Create a Stripe client.
-var stripe = Stripe('pk_test_0kZM9zZYjlXDjW3TJhsK40EX');
-
-// Create an instance of Elements.
-var elements = stripe.elements();
-
-// Custom styling can be passed to options when creating an Element.
-// (Note that this demo uses a wider set of styles than the guide below.)
-var style = {
- base: {
-   color: '#32325d',
-   lineHeight: '18px',
-   fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-   fontSmoothing: 'antialiased',
-   fontSize: '16px',
-   '::placeholder': {
-     color: '#aab7c4'
-   }
- },
- invalid: {
-   color: '#fa755a',
-   iconColor: '#fa755a'
- }
-};
-
-// Create an instance of the card Element.
-var card = elements.create('card', {
-  style: style,
-  hidePostalCode: true
+    </section>
+    <input id="nonce" name="payment_method_nonce" type="hidden" />
+    <input name="streetAddress" id="streetAddress" type="hidden" />
+    <input name="firstName" id="firstName" type="hidden" />
+    <input name="lastName" id="lastName" type="hidden" />
+    <input name="region"    id="region" type="hidden"/>
+    <input name="locality"   id="locality" type="hidden"/>
+    <input name="postalCode" id="postalCode" type="hidden"/>
+    <button class="btn btn-primary" type="submit"><span>Confirm and Paypal</span></button>
+  </form>
 
 
-});
-
-// Add an instance of the card Element into the `card-element` <div>.
-card.mount('#card-element');
-
-// Handle real-time validation errors from the card Element.
-card.addEventListener('change', function(event) {
- var displayError = document.getElementById('card-errors');
- if (event.error) {
-   displayError.textContent = event.error.message;
- } else {
-   displayError.textContent = '';
- }
-});
-
-// Handle form submission.
-var form = document.getElementById('payment-form');
-form.addEventListener('submit', function(event) {
- event.preventDefault();
-
- //Disable the submit button to prevent repeated clicks.
- document.getElementById('complete-order').disabled = true;
-
- var options = {
-   name: document.getElementById('name_on_card').value,
-   address_line1: document.getElementById('address').value,
-   address_city: document.getElementById('city').value,
-   address_state: document.getElementById('state').value,
-   address_zip: document.getElementById('zipcode').value
- };
-
- stripe.createToken(card, options).then(function(result) {
-   if (result.error) {
-     // Inform the user if there was an error.
-     var errorElement = document.getElementById('card-errors');
-     errorElement.textContent = result.error.message;
-     document.getElementById('complete-order').disabled = false;
-   } else {
-     // Send the token to your server.
-     stripeTokenHandler(result.token);
-   }
- });
-});
-
-  function stripeTokenHandler(token) {
-  // Insert the token ID into the form so it gets submitted to the server
-  var form = document.getElementById('payment-form');
-  var hiddenInput = document.createElement('input');
-  hiddenInput.setAttribute('type', 'hidden');
-  hiddenInput.setAttribute('name', 'stripeToken');
-  hiddenInput.setAttribute('value', token.id);
-  form.appendChild(hiddenInput);
-
-  // Submit the form
-  form.submit();
-  }
 
 
-  })();
+  <script src="https://js.braintreegateway.com/js/braintree-2.32.1.min.js"></script>
+  <script>
+  //Braintree Paypal Starts Here
+      const form = document.querySelector('#paypal-payment-form');
+      const client_token = "{{$paypalToken}}";
 
-</script>
+
+   //START HERE V2
+      braintree.setup(client_token, 'custom', {
+        paypal: {
+          container: 'paypal-container',
+          singleUse: true, // Required
+          amount: 10.00, // Required
+          currency: 'USD', // Required
+          locale: 'en_US',
+          enableShippingAddress: true,
+          shippingAddressOverride: {
+            recipientName: '',
+            streetAddress: '',
+            extendedAddress: '',
+            locality: '',
+            countryCodeAlpha2: '',
+            postalCode: '',
+            region: '',
+            phone: '',
+           editable: false
+         }
+        },
+        onPaymentMethodReceived: function (obj) {
+         console.log(obj);
+         console.log(obj.details.shippingAddress);
+          form.addEventListener('submit', function (event) {
+            event.preventDefault();
+              //Add the nonce to the form and submit
+              document.querySelector('#nonce').value = obj.nonce;
+              document.querySelector('#streetAddress').value = obj.details.shippingAddress.streetAddress;
+              document.querySelector('#firstName').value = obj.details.firstName;
+              document.querySelector('#lastName').value = obj.details.lastName;
+              document.querySelector('#region').value = obj.details.shippingAddress.region;
+              document.querySelector('#postalCode').value = obj.details.shippingAddress.postalCode;
+              document.querySelector('#locality').value = obj.details.shippingAddress.locality;
+            form.submit();
+        })
+      },
+    })
+  // </script>

@@ -30,26 +30,32 @@ Route::delete('/saveForLater/{product}', 'SaveForLaterController@destroy')->name
 Route::post('/saveForLater/switchToCart/{product}', 'SaveForLaterController@switchToCart')->name('saveforlater.movetocart');
 
 
-
 Route::get('/shop/{slug}', 'ShopController@show')->name('shop.show');
 
 //  Checkout
 Route::get('/checkout', 'CheckoutController@index')->name('checkout.index')->middleware('auth');
 Route::post('/checkout', 'CheckoutController@store')->name('checkout.store');
+Route::post('/paypal-checkout', 'CheckoutController@paypalCheckout')->name('checkout.paypal');
+Route::post('/paypal-checkout-paypal', 'CheckoutController@paypalCheckoutPaypal')->name('checkout.paypal-paypal');
 
-//Guest Checkout
-Route::get('/guestcheckout', 'CheckoutController@index')->name('guestcheckout.index');
 
 
 Route::get('/empty', function(){
    Cart::instance('saveForLater')->destroy();
 });
 
+Route::get('/cartnow', function(){
+  dd(Cart::content());
+});
+
+Route::get('/savelater', function(){
+  dd(Cart::instance('saveForLater')->content());
+});
+
 // THANK YOU PAGE
 Route::get('/thankyou', 'ThankyouController@index')->name('thankyou.index');
 
 // COUPON
-
 Route::post('/coupon', 'CouponController@store')->name('coupon.store');
 Route::delete('/coupon', 'CouponController@destroy')->name('coupon.destroy');
 
@@ -66,7 +72,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/mailable', function(){
 
-  $order = App\Order::find(25);
+  $order = App\Order::find(1);
   //dd($order);
   return new App\Mail\OrderPlaced($order);
+
 });
+
+
+//Search
+Route::get('/search', 'ShopController@search')->name('search');

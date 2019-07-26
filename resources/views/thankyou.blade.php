@@ -1,4 +1,14 @@
+@extends('layouts/app')
+
+
+@section('content')
 @include('includes/header')
+
+<!-- Search -->
+@component('components.breadcrumbs')
+
+@endcomponent
+
 
 <!--  CHECK MESSAGE-->
 @if (session()->has('success_message'))
@@ -29,3 +39,5 @@
 <a href="{{ route('landing-page.index') }}">
 <h2>Home</h2>
 </a>
+
+@endsection

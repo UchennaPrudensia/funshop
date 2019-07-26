@@ -85,11 +85,12 @@ class CartController extends Controller
     public function update(Request $request, $id)
     {
 
+
       $validator = Validator::make($request->all(), [
                                     'quantity' => 'required|numeric|between:1,5'
                                   ]);
 
-        if (!$validator)
+        if ($validator->fails())
         {
           session()->flash('errors', collect(['Quantity must be between 1 and 5']));
 
@@ -125,13 +126,17 @@ class CartController extends Controller
      */
     public function saveForLater($id)
     {
+
         $item = Cart::get($id);
+        //dd($id,$item);
 
         Cart::remove($id);
 
         $duplicates = Cart::instance('saveForLater')->search(function ($cartItem, $rowId) use($id) {
   	                   return $rowId === $id;
                       });
+
+
 
             if ($duplicates->isNotEmpty())
             {
